@@ -1,4 +1,4 @@
-package routes
+package controllers
 
 import (
 	"context"
@@ -32,11 +32,11 @@ func (router *RouteHandler) getMeeting(w http.ResponseWriter, r *http.Request) {
 
 	participantArr, noParticipant := query["participant"]
 
-	if !noParticipant {
+	if !noParticipant || len(participantArr) < 1 {
 		startArr, noStart := query["start"]
 		endArr, noEnd := query["end"]
 
-		if !noStart || !noEnd {
+		if !noStart || !noEnd || len(startArr) < 1 || len(endArr) < 1 {
 			http.Error(w, "Invalid Request Body", http.StatusBadRequest)
 			return
 		}
