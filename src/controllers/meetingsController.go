@@ -3,7 +3,6 @@ package routes
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -77,8 +76,6 @@ func (router *RouteHandler) getMeeting(w http.ResponseWriter, r *http.Request) {
 	unwindStage := bson.D{{
 		"$unwind", "$participants",
 	}}
-
-	fmt.Println(participant)
 
 	matchStage := bson.D{{
 		"$match", bson.M{
@@ -169,7 +166,7 @@ func (router *RouteHandler) scheduleMeeting(w http.ResponseWriter, r *http.Reque
 	}
 
 	if len(meetings) != 0 {
-		fmt.Println(meetings)
+		log.Println("Conflict occured with the meetings returned in the response.")
 		json.NewEncoder(w).Encode(meetings)
 		return
 	}
