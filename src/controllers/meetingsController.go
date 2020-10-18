@@ -120,7 +120,9 @@ func (router *RouteHandler) scheduleMeeting(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Aggregation Pipeline
-	// 1. Filter out everything that lies in the same time slot
+	// 1. Unwind participants
+	// 2. Check if the email matches and RSVP is "Yes" or "Maybe"
+	// 3. Filter out everything that lies in the same time slot
 	// currentMeeting.endTime > newMeeting.endTime > currentMeeting.startTime
 	// OR
 	// currentMeeting.endTime > newMeeting.startTime > currentMeeting.startTime
