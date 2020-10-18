@@ -61,14 +61,14 @@ func (router *RouteHandler) getMeeting(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var meets []bson.M
+		var meetings []bson.M
 
-		if err = meetingsCursor.All(context.TODO(), &meets); err != nil {
+		if err = meetingsCursor.All(context.TODO(), &meetings); err != nil {
 			log.Fatal(err.Error())
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}
 
-		json.NewEncoder(w).Encode(meets)
+		json.NewEncoder(w).Encode(meetings)
 		return
 	}
 
