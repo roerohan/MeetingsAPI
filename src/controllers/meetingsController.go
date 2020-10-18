@@ -123,6 +123,7 @@ func (router *RouteHandler) scheduleMeeting(w http.ResponseWriter, r *http.Reque
 	// currentMeeting.endTime > newMeeting.endTime > currentMeeting.startTime
 	// OR
 	// currentMeeting.endTime > newMeeting.startTime > currentMeeting.startTime
+
 	emails := make(bson.A, len(m.Participants))
 	for i := 0; i < len(m.Participants); i++ {
 		emails[i] = m.Participants[i].Email
