@@ -15,18 +15,6 @@ import (
 	"github.com/roerohan/MeetingsAPI/src/utils"
 )
 
-// RouteHandler stores mongo client
-type RouteHandler struct {
-	Meeting *mongo.Collection
-}
-
-// NewRouteHandler returns a RouteHandler object
-func NewRouteHandler(Meeting *mongo.Collection) *RouteHandler {
-	return &RouteHandler{
-		Meeting: Meeting,
-	}
-}
-
 func (router *RouteHandler) getMeeting(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 
