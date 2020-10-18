@@ -190,5 +190,7 @@ func (router *RouteHandler) MeetingsController(w http.ResponseWriter, r *http.Re
 
 	case "POST":
 		router.scheduleMeeting(w, r)
+	default:
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 	}
 }
