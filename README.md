@@ -73,13 +73,19 @@ git clone https://github.com/roerohan/MeetingsAPI.git
 ```
 2. Install NPM packages
 ```sh
-npm install
+go get ./...
 ```
 
 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
+
+To run the project, you can use:
+
+```sh
+go run src/main.go
+```
 
 1. POST `/meetings`: This route accepts a JSON of the following format:
 
