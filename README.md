@@ -3,23 +3,23 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <!-- <a href="https://github.com/roerohan/Template">
+  <!-- <a href="https://github.com/roerohan/MeetingsAPI">
     <img src="https://project-logo.png" alt="Logo" width="80">
   </a> -->
 
-  <h3 align="center">YOUR_TITLE</h3>
+  <h3 align="center">MeetingsAPI</h3>
 
   <p align="center">
-    YOUR_SHORT_DESCRIPTION
+    A simple API built using Go.
     <br />
-    <a href="https://github.com/roerohan/Template"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/roerohan/MeetingsAPI"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/roerohan/Template">View Demo</a>
+    <a href="https://github.com/roerohan/MeetingsAPI">View Demo</a>
     ·
-    <a href="https://github.com/roerohan/Template/issues">Report Bug</a>
+    <a href="https://github.com/roerohan/MeetingsAPI/issues">Report Bug</a>
     ·
-    <a href="https://github.com/roerohan/Template/issues">Request Feature</a>
+    <a href="https://github.com/roerohan/MeetingsAPI/issues">Request Feature</a>
   </p>
 </p>
 
@@ -44,18 +44,14 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`roerohan`, `repo`
+A simple REST API is built for scheduling meetings as a starter project for Go. This has routes such as `/meetings` and `/meeting` to add meetings, and get meetings by their `id`. You can also filter meetings for a participant and by the start time and end time of the meeting.
 
 
 ### Built With
 
-* []()
-* []()
-* []()
+* [Go](https://golang.org/)
+* [MongoDB](https://www.mongodb.com/)
+* [Mongo-driver Go package](https://github.com/mongodb/mongo-go-driver)
 
 
 
@@ -66,17 +62,14 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-```sh
-npm install npm@latest -g
-```
+- Go
+- MongoDB
 
 ### Installation
  
 1. Clone the Repo
 ```sh
-git clone https://github.com/roerohan/Template.git
+git clone https://github.com/roerohan/MeetingsAPI.git
 ```
 2. Install NPM packages
 ```sh
@@ -88,16 +81,35 @@ npm install
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+1. POST `/meetings`: This route accepts a JSON of the following format:
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+```json
+{
+    "title": "something",
+    "participants": [
+        {
+            "name": "something",
+            "email": "something",
+            "rsvp": "Yes"
+        }
+    ],
+    "startTime": 1603059170289,
+    "endTime": 1603059290289
+}
+```
+> Note: This route ensures that a new meeting can't be added if a participant of the new meeting has already RSVP-ed "Yes" or "Maybe" to a different meeting. If it does, the list of meetings which conflict with the current meeting is returned.
 
+2. GET `/meetings?participant=<email>`: This route takes the email ID of the participant and a list of meetings which the participant is included in, irrespective of the RSVP status.
+
+3. GET `/meetings?start=<startTimestamp>&end=<endTimestamp>`: This route returns a list of all meetings that occur in the time duration between `start` and `end`.
+
+4. GET `/meeting/<id>`: This route returns the meeting containing the ID as specified in the request parameter.
 
 
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/roerohan/Template/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/roerohan/MeetingsAPI/issues) for a list of proposed features (and known issues).
 
 
 
@@ -126,4 +138,4 @@ Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more informati
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [roerohan-url]: https://roerohan.github.io
 [issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=flat-square
-[issues-url]: https://github.com/roerohan/Template/issues
+[issues-url]: https://github.com/roerohan/MeetingsAPI/issues

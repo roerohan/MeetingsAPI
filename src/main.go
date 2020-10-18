@@ -18,6 +18,7 @@ func httpListener(port int) {
 	router := routes.NewRouteHandler(client.Database("MeetingsAPI").Collection("meetings"))
 	
 	http.HandleFunc("/meetings", router.MeetingsController)
+	http.HandleFunc("/meeting", router.MeetingController)
 
 	fmt.Println("[INFO] Listening on PORT " + portStr)
 	log.Fatal(http.ListenAndServe(":"+portStr, nil))
