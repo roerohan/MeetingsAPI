@@ -73,7 +73,7 @@ git clone https://github.com/roerohan/MeetingsAPI.git
 ```
 2. Install Go packages
 ```sh
-go get ./...
+go mod tidy
 ```
 
 
