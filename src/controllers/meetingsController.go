@@ -17,16 +17,17 @@ import (
 
 func (router *RouteHandler) getMeeting(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
+	w.Header().Set("Content-Type", "application/json")
 
-	participantArr, isParticipantExists := query["participant"]
-	// pageArr, isPageExists := query["page"]
+	participantArr, participantExists := query["participant"]
+	pageArr, pageExists := query["page"]
 
-	if !isParticipantExists || len(participantArr) < 1 {
-		startArr, isStartExists := query["start"]
-		endArr, isEndExists := query["end"]
+	if !participantExists || len(participantArr) < 1 {
+		startArr, startExists := query["start"]
+		endArr, endExists := query["end"]
 
-		if !isStartExists || !isEndExists || len(startArr) < 1 || len(endArr) < 1 {
-			http.Error(w, "Invalid Request Body", http.StatusBadRequest)
+		if !startExists || !endExists || len(startArr) < 1 || len(endArr) < 1 {
+			http.Error(w, "Invalid Request", http.StatusBadRequest)
 			return
 		}
 
@@ -45,7 +46,7 @@ func (router *RouteHandler) getMeeting(w http.ResponseWriter, r *http.Request) {
 		}})
 
 		if err != nil {
-			http.Error(w, "Invalid Request Body", http.StatusBadRequest)
+			http.Error(w, "Invalid Request", http.StatusBadRequest)
 			return
 		}
 
@@ -54,6 +55,32 @@ func (router *RouteHandler) getMeeting(w http.ResponseWriter, r *http.Request) {
 		if err = meetingsCursor.All(context.TODO(), &meetings); err != nil {
 			log.Fatal(err.Error())
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
+
+		if pageExists {
+			itemsPerPage := 100
+
+			page, _ := strconv.Atoi(pageArr[0])
+
+			if page < 1 {
+				http.Error(w, "Invalid Request", http.StatusBadRequest)
+				return
+			}
+			
+			startIdx := (page - 1) * itemsPerPage
+			endIdx := startIdx + itemsPerPage
+
+			if startIdx >= len(meetings) {
+				json.NewEncoder(w).Encode(models.Meeting{})
+				return
+			}
+
+			if endIdx > len(meetings) {
+				endIdx = len(meetings)
+			}
+
+			json.NewEncoder(w).Encode(meetings[startIdx: endIdx])
+			return
 		}
 
 		json.NewEncoder(w).Encode(meetings)
