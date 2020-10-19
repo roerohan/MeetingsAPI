@@ -53,33 +53,19 @@ func (router *RouteHandler) getMeeting(w http.ResponseWriter, r *http.Request) {
 		var meetings []bson.M
 
 		if err = meetingsCursor.All(context.TODO(), &meetings); err != nil {
-			log.Fatal(err.Error())
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
 		}
 
 		if pageExists {
-			itemsPerPage := 100
+			paginatedMeetings, fail := utils.PaginateMeetings(meetings, pageArr)
 
-			page, _ := strconv.Atoi(pageArr[0])
-
-			if page < 1 {
+			if fail {
 				http.Error(w, "Invalid Request", http.StatusBadRequest)
 				return
 			}
-			
-			startIdx := (page - 1) * itemsPerPage
-			endIdx := startIdx + itemsPerPage
 
-			if startIdx >= len(meetings) {
-				json.NewEncoder(w).Encode(models.Meeting{})
-				return
-			}
-
-			if endIdx > len(meetings) {
-				endIdx = len(meetings)
-			}
-
-			json.NewEncoder(w).Encode(meetings[startIdx: endIdx])
+			json.NewEncoder(w).Encode(paginatedMeetings)
 			return
 		}
 
@@ -108,6 +94,18 @@ func (router *RouteHandler) getMeeting(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(meetings) != 0 {
+		if pageExists {
+			paginatedMeetings, fail := utils.PaginateMeetings(meetings, pageArr)
+
+			if fail {
+				http.Error(w, "Invalid Request", http.StatusBadRequest)
+				return
+			}
+
+			json.NewEncoder(w).Encode(paginatedMeetings)
+			return
+		}
+
 		json.NewEncoder(w).Encode(meetings)
 		return
 	}
