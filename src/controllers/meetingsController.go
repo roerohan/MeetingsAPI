@@ -18,13 +18,14 @@ import (
 func (router *RouteHandler) getMeeting(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 
-	participantArr, noParticipant := query["participant"]
+	participantArr, isParticipantExists := query["participant"]
+	// pageArr, isPageExists := query["page"]
 
-	if !noParticipant || len(participantArr) < 1 {
-		startArr, noStart := query["start"]
-		endArr, noEnd := query["end"]
+	if !isParticipantExists || len(participantArr) < 1 {
+		startArr, isStartExists := query["start"]
+		endArr, isEndExists := query["end"]
 
-		if !noStart || !noEnd || len(startArr) < 1 || len(endArr) < 1 {
+		if !isStartExists || !isEndExists || len(startArr) < 1 || len(endArr) < 1 {
 			http.Error(w, "Invalid Request Body", http.StatusBadRequest)
 			return
 		}
@@ -115,6 +116,12 @@ func (router *RouteHandler) scheduleMeeting(w http.ResponseWriter, r *http.Reque
 	emails := make(bson.A, len(m.Participants))
 	for i := 0; i < len(m.Participants); i++ {
 		emails[i] = m.Participants[i].Email
+
+		_, found := utils.Find([]string{"Yes", "No", "Maybe", "Not Answered"}, m.Participants[i].RSVP)
+		if !found {
+			http.Error(w, "Invalid Request Body", http.StatusBadRequest)
+			return
+		}
 	}
 
 	unwindStage := bson.D{{
