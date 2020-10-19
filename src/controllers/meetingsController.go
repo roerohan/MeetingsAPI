@@ -137,6 +137,8 @@ func (router *RouteHandler) scheduleMeeting(w http.ResponseWriter, r *http.Reque
 	// currentMeeting.endTime > newMeeting.endTime > currentMeeting.startTime
 	// OR
 	// currentMeeting.endTime > newMeeting.startTime > currentMeeting.startTime
+	// OR
+	// newMeeting.endTime > currentMeeting.endTime > currentMeeting.startTime > newMeeting.startTime
 
 	emails := make(bson.A, len(m.Participants))
 	for i := 0; i < len(m.Participants); i++ {
@@ -174,6 +176,10 @@ func (router *RouteHandler) scheduleMeeting(w http.ResponseWriter, r *http.Reque
 				bson.M{
 					"startTime": bson.M{"$lte": m.StartTime},
 					"endTime":   bson.M{"$gte": m.StartTime},
+				},
+				bson.M {
+					"startTime": bson.M{"$gte": m.StartTime},
+					"endTime": bson.M{"$lte": m.EndTime},
 				},
 			},
 		},
